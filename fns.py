@@ -47,21 +47,22 @@ connection=Client(
 def get_sql_file():
     
     while True:
-        print(Fore.YELLOW + " Выберите файл с SQL-конвеером!" + Fore.RESET)
+        # print(Fore.YELLOW + " Выберите файл с SQL-конвеером!" + Fore.RESET)
 
         selected_file = filedialog.askopenfile(title="Выберите файл с SQL-конвеером!")
 
-        path_parts = sql_file_name.split(r"/")
-        folder = os.path.join('C:\\',*path_parts[1:-1])
-        short_name = '.'.join(path_parts[-1].split(".")[:-1])
-        file_extension = path_parts[-1].split(".")[-1]
-        print(Fore.MAGENTA + " Файл запроса:\n" +
-            Fore.CYAN + f" {folder}\\" +
-            Fore.WHITE + f"{short_name}.{file_extension}" +
-            Fore.RESET) 
-    
+   
         if selected_file:
             sql_file_name = selected_file.name
+
+            path_parts = sql_file_name.split(r"/")
+            folder = os.path.join('C:\\',*path_parts[1:-1])
+            short_name = '.'.join(path_parts[-1].split(".")[:-1])
+            file_extension = path_parts[-1].split(".")[-1]
+            print(Fore.MAGENTA + " Файл конвеера:\n" +
+                Fore.CYAN + f" {folder}\\" +
+                Fore.WHITE + f"{short_name}.{file_extension}" +
+                Fore.RESET) 
 
             if sql_file_name.split(".")[-1].lower() != 'sql':
                 flicker(" Выбранный файл должен иметь расширение .sql!", finish_Fore=Fore.RED)
@@ -70,7 +71,6 @@ def get_sql_file():
             # Проверяем, чтобы внутри файла были блоки конвеера
             with open (sql_file_name, encoding='utf-8') as f:
                 sql = f.read()
-
             if  "CREATE OR REPLACE TABLE " not in sql:       
                 flicker(" Выбранный файл не содержит CREATE OR REPLACE TABLE!", finish_Fore=Fore.RED)
                 continue
@@ -78,6 +78,7 @@ def get_sql_file():
 
             
             pipe_results_file = os.path.join(folder, f"{short_name}.sql_pipe")
+
 
             return {"sql_file_name": sql_file_name,
                     "pipe_results_file": pipe_results_file}

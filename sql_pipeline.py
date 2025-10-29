@@ -6,7 +6,7 @@ from fns import flicker
 
 init()
 print(Style.BRIGHT)
-print(logo_colored)
+
 
 
 choise = "3"
@@ -15,10 +15,9 @@ choise = "3"
 while True:
 
     if choise == "3":
+        print(logo_colored)
         print(Fore.YELLOW + " Нажмите ввод, чтобы выбрать файл конвеера!")
         input()
-        sql_source = get_sql_file()   
-    if choise == "2": 
         sql_source = get_sql_file()   
     
     sql_file_name = sql_source["sql_file_name"]
@@ -36,27 +35,37 @@ while True:
                 while True:
                     print(Fore.YELLOW + " Выберите:\n" +
                           Fore.WHITE + " 1" + Fore.CYAN + " - чтобы запустить с места останова\n" +
-                          Fore.WHITE + " 2" + Fore.CYAN + " - чтобы запустить конвеер сначала\n" + Fore.RESET +
+                          Fore.WHITE + " 2" + Fore.CYAN + " - чтобы запустить конвеер с начала\n" + Fore.RESET +
                           Fore.WHITE + " 3" + Fore.CYAN + " - чтобы запустить новый конвеер" + Fore.RESET)                    
                     choise = input(" Вы выбрали: ")
                     
-                    if choise == "2":
-                        open(pipe_results_file, 'w', encoding = 'utf-8')
-                        pipeline(sql_file_name, pipe_results_file) 
-                    if choise in ("1"):
-                        pipeline(sql_file_name, pipe_results_file) 
-                    if choise in ("3"):
+                    if choise == "1":    
+                        pipeline(sql_file_name, pipe_results_file)
                         break
+                    elif choise == "2":
+                        open(pipe_results_file, 'w', encoding = 'utf-8')
+                        pipeline(sql_file_name, pipe_results_file)
+                        break
+                    elif choise == "3":
+                        break
+            else:
+                pipeline(sql_file_name, pipe_results_file)
+                
+        if choise == "3":
+            continue
+    else:
+        open(pipe_results_file, 'w', encoding = 'utf-8')
+        pipeline(sql_file_name, pipe_results_file)
 
-    # else:
-    #     open(pipe_results_file, 'w', encoding = 'utf-8')
-
-                          
+    print(logo_colored)              
     
-    print(logo_colored)
-    print(Fore.YELLOW + " Выберите:\n" +
-          Fore.WHITE + " 1" + Fore.CYAN + " - чтобы запустить тот же конвеер\n" +
-          Fore.WHITE + " 2" + Fore.CYAN + " - чтобы запустить новый конвеер" + Fore.RESET)
+    while True:
+        print(Fore.YELLOW + " Выберите:\n" +
+            Fore.WHITE + " 1" + Fore.CYAN + " - чтобы запустить тот же конвеер\n" +
+            Fore.WHITE + " 3" + Fore.CYAN + " - чтобы запустить новый конвеер" + Fore.RESET)
 
-    choise = input(" Вы выбрали: ")
+        choise = input(" Вы выбрали: ")
+
+        if choise in ("1", "3"):
+            break
     
