@@ -66,7 +66,11 @@ def get_sql_file():
                 Fore.CYAN + f" {folder}\\" +
                 Fore.WHITE + f"{short_name}.{file_extension}" +
                 Fore.RESET) 
-            return sql_file_name
+            
+            pipe_results_file = os.path.join(folder, f"{short_name}.sql_pipe")
+
+            return {"sql_file_name": sql_file_name,
+                    "pipe_results_file": pipe_results_file}
         else:
             flicker(" Не выбран файл с SQL-конвеером!", finish_Fore=Fore.RED)
 
@@ -104,7 +108,7 @@ def sql_exec(sql_block, sql_block_first_line, pipe_results_file):
             connection.execute(sql_block)
             
             with open (pipe_results_file, 'a') as f:
-                f.write(f" {sql_block_first_line}\n")
+                f.write(f" {datetime.now()} {sql_block_first_line}\n")
 
             sql_block_state[0] = Fore.GREEN + ' Ok\n'
             exec_block[0] = False

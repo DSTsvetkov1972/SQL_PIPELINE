@@ -9,15 +9,21 @@ print(Style.BRIGHT)
 print(logo_colored)
 
 
-choise = "2"
-res_file = ""
+choise = "0"
+
 
 while True:
-    
-    if choise == "2": 
-        sql_file_name = get_sql_file()
 
-    pipe_results_file = os.path.join('/'.join(sql_file_name.split('/')[:-1]), '.sql_pipe')
+    if choise == "0":
+        print(Fore.YELLOW + " Нажмите ввод, чтобы выбрать файл конвеера!")
+        input()
+        sql_source = get_sql_file()   
+    if choise == "2": 
+        sql_source = get_sql_file()   
+    
+    sql_file_name = sql_source["sql_file_name"]
+
+    pipe_results_file = sql_source["pipe_results_file"]
 
     if os.path.exists(pipe_results_file):
         with open(pipe_results_file, 'r', encoding = 'utf-8') as f:
