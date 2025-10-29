@@ -31,7 +31,7 @@ while True:
             if results:
                 flicker(" Этот конвеер уже запускался!", pause = 0.5, finish_Fore=Fore.RED)
                 print(Fore.YELLOW + " Успешно выполненные шаги:")
-                print(Fore.GREEN + results + Fore.RESET)
+                print(Fore.GREEN + results.replace("\t"," ") + Fore.RESET)
 
                 while True:
                     print(Fore.YELLOW + " Выберите:\n" +

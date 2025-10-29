@@ -95,20 +95,24 @@ def sql_exec(sql_block, sql_block_first_line, pipe_results_file):
     # Проверяем, был ли отработан блок
 
     with open (pipe_results_file, 'r') as f:
-        results = f.read()
+        res_str = f.read()
+        if res_str:
+            results = [result.split("\t")[1] for result in res_str.split('\n')[:-1]]
+        else:
+            results = []
 
-        if sql_block_first_line in results:
-            sql_block_state[0] = Fore.GREEN + ' успешно в предыдущем прогоне\n'
-            exec_block[0] = False
-            spinner_on[0] = False
-            return
+    if sql_block_first_line in results:
+        sql_block_state[0] = Fore.GREEN + ' успешно в предыдущем прогоне\n'
+        exec_block[0] = False
+        spinner_on[0] = False
+        return
 
     try:
         with connection:
             connection.execute(sql_block)
             
             with open (pipe_results_file, 'a') as f:
-                f.write(f" {datetime.now()} {sql_block_first_line}\n")
+                f.write(f" {datetime.now()}\t{sql_block_first_line}\n")
 
             sql_block_state[0] = Fore.GREEN + ' Ok\n'
             exec_block[0] = False
