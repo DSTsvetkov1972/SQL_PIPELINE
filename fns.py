@@ -50,7 +50,16 @@ def get_sql_file():
         print(Fore.YELLOW + " Выберите файл с SQL-конвеером!" + Fore.RESET)
 
         selected_file = filedialog.askopenfile(title="Выберите файл с SQL-конвеером!")
-        
+
+        path_parts = sql_file_name.split(r"/")
+        folder = os.path.join('C:\\',*path_parts[1:-1])
+        short_name = '.'.join(path_parts[-1].split(".")[:-1])
+        file_extension = path_parts[-1].split(".")[-1]
+        print(Fore.MAGENTA + " Файл запроса:\n" +
+            Fore.CYAN + f" {folder}\\" +
+            Fore.WHITE + f"{short_name}.{file_extension}" +
+            Fore.RESET) 
+    
         if selected_file:
             sql_file_name = selected_file.name
 
@@ -58,14 +67,15 @@ def get_sql_file():
                 flicker(" Выбранный файл должен иметь расширение .sql!", finish_Fore=Fore.RED)
                 continue
 
-            path_parts = sql_file_name.split(r"/")
-            folder = os.path.join('C:\\',*path_parts[1:-1])
-            short_name = '.'.join(path_parts[-1].split(".")[:-1])
-            file_extension = path_parts[-1].split(".")[-1]
-            print(Fore.MAGENTA + " Файл запроса:\n" +
-                Fore.CYAN + f" {folder}\\" +
-                Fore.WHITE + f"{short_name}.{file_extension}" +
-                Fore.RESET) 
+            # Проверяем, чтобы внутри файла были блоки конвеера
+            with open (sql_file_name, encoding='utf-8') as f:
+                sql = f.read()
+
+            if  "CREATE OR REPLACE TABLE " not in sql:       
+                flicker(" Выбранный файл не содержит CREATE OR REPLACE TABLE!", finish_Fore=Fore.RED)
+                continue
+
+
             
             pipe_results_file = os.path.join(folder, f"{short_name}.sql_pipe")
 
