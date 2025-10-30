@@ -23,6 +23,16 @@ exec_block = [None]      # если ошибка TimeOut Error в запросе
 break_pipe = [None]      # если ошибка в запросе break_pipe = [False] прервать выполнение конвеера
 sql_block_state = [None] # значение, которое выводитися в конце работы spinner, может быть 'Ok' или 'Time Out Error' 
 
+
+connection=Client(
+    host=CLICK_HOST,
+    port = CLICK_PORT,
+    database = CLICK_DBNAME,
+    user = CLICK_USER,
+    password = CLICK_PWD,
+    secure = True,
+    verify=False)
+
 def flicker(your_str, interval=0.05, repeats=7, fleaker_Fore=Fore.RED, finish_Fore=Fore.YELLOW, pause = 0):
     print(fleaker_Fore)
     for i in range(0, repeats):
@@ -34,14 +44,26 @@ def flicker(your_str, interval=0.05, repeats=7, fleaker_Fore=Fore.RED, finish_Fo
     print('\033[F' + finish_Fore + your_str + Fore.RESET)
     sleep(pause)
 
-connection=Client(
-    host=CLICK_HOST,
-    port = CLICK_PORT,
-    database = CLICK_DBNAME,
-    user = CLICK_USER,
-    password = CLICK_PWD,
-    secure = True,
-    verify=False)
+def pprint_file_name(sql_file_name, stage=" Файл конвеера:\n"):
+
+    path_parts = sql_file_name.split(r"/")
+    folder = os.path.join('C:\\',*path_parts[1:-1])
+    short_name = '.'.join(path_parts[-1].split(".")[:-1])
+    file_extension = path_parts[-1].split(".")[-1]
+    print(Fore.MAGENTA + stage +
+          Fore.CYAN + f" {folder}\\" +
+          Fore.WHITE + f"{short_name}.{file_extension}" +
+          Fore.RESET) 
+
+def get_pipe_results_file_name(sql_file_name):
+    
+    path_parts = sql_file_name.split(r"/")
+    folder = os.path.join('C:\\',*path_parts[1:-1])
+    short_name = '.'.join(path_parts[-1].split(".")[:-1])
+    
+    return os.path.join(folder, f"{short_name}.sql_pipe")
+
+
 
 
 def get_sql_file():
@@ -55,14 +77,7 @@ def get_sql_file():
         if selected_file:
             sql_file_name = selected_file.name
 
-            path_parts = sql_file_name.split(r"/")
-            folder = os.path.join('C:\\',*path_parts[1:-1])
-            short_name = '.'.join(path_parts[-1].split(".")[:-1])
-            file_extension = path_parts[-1].split(".")[-1]
-            print(Fore.MAGENTA + " Файл конвеера:\n" +
-                Fore.CYAN + f" {folder}\\" +
-                Fore.WHITE + f"{short_name}.{file_extension}" +
-                Fore.RESET) 
+            pprint_file_name(sql_file_name)
 
             if sql_file_name.split(".")[-1].lower() != 'sql':
                 flicker(" Выбранный файл должен иметь расширение .sql!", finish_Fore=Fore.RED)
@@ -77,7 +92,7 @@ def get_sql_file():
 
 
             
-            pipe_results_file = os.path.join(folder, f"{short_name}.sql_pipe")
+            pipe_results_file = get_pipe_results_file_name(sql_file_name)
 
 
             return {"sql_file_name": sql_file_name,
@@ -154,7 +169,7 @@ def pipeline(sql_file_name, pipe_results_file):
         block_starts.append(block_start)
 
     if block_starts != [-1]:
-        print(Fore.MAGENTA + " Запускаем конвеер...\n" + Fore.RESET)
+        pprint_file_name(sql_file_name+'\n', stage=" Запускаем конвеер:\n")
 
         for block_number, block_start in enumerate(block_starts[:-1]):
 
