@@ -31,7 +31,9 @@ connection=Client(
     user = CLICK_USER,
     password = CLICK_PWD,
     secure = True,
-    verify=False)
+    verify=False,
+    settings=dict(socket_timeout=3000000, send_timeout=3000000, keepAliveTimeout=3000000)
+    )
 
 def flicker(your_str, interval=0.05, repeats=7, fleaker_Fore=Fore.RED, finish_Fore=Fore.YELLOW, pause = 0):
     print(fleaker_Fore)
