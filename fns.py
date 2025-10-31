@@ -66,8 +66,6 @@ def get_pipe_results_file_name(sql_file_name):
     return os.path.join(folder, f"{short_name}.sql_pipe")
 
 
-
-
 def get_sql_file():
     
     while True:
@@ -161,14 +159,14 @@ def pipeline(sql_file_name, pipe_results_file):
 
     sql = sql.split("--download")[0]
 
+    search_from = 0
     block_start = 0
     block_starts = []
 
-
-    while block_start!=-1:
-        block_start = sql.find("CREATE OR REPLACE TABLE ", block_start + 1)
-
+    while block_start !=-1:
+        block_start = sql.find("CREATE OR REPLACE TABLE ", search_from)
         block_starts.append(block_start)
+        search_from = block_start + 1
 
     if block_starts != [-1]:
         pprint_file_name(sql_file_name+'\n', stage=" Запускаем конвеер:\n")
