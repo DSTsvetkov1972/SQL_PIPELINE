@@ -6,6 +6,7 @@ from datetime import datetime
 from tkinter import filedialog
 from time import sleep
 from threading import Thread
+import pyperclip
 
 dotenv.load_dotenv(r"C:\Users\tsvetkovds\Documents\.Полезности\PYTHON\.env")
 
@@ -163,12 +164,20 @@ def pipeline(sql_file_name, pipe_results_file):
     block_start = 0
     block_starts = []
 
-    while block_start !=-1:
+    while True:
         block_start = sql.find("CREATE OR REPLACE TABLE ", search_from)
-        block_starts.append(block_start)
-        search_from = block_start + 1
+        if block_start==-1:
+            block_start = None
+            block_starts.append(block_start)
+            break
+        else:
+            block_starts.append(block_start)
+            search_from = block_start + 1
 
-    if block_starts != [-1]:
+    print(block_starts)
+    
+
+    if block_starts != [None]:
         pprint_file_name(sql_file_name+'\n', stage=" Запускаем конвеер:\n")
 
         for block_number, block_start in enumerate(block_starts[:-1]):
@@ -176,16 +185,18 @@ def pipeline(sql_file_name, pipe_results_file):
             block_finish =  block_starts[block_number+1]
 
             sql_block = sql[block_start: block_finish]
-            sql_block_first_line = sql_block.split("\n")[0]
-
+            sql_block_first_line = sql_block.split("\n")[0].split("--")[0]
+            # print(sql_block_first_line)
+            # input()
+            pyperclip.copy(sql_block)
             
             break_pipe[0] = False
             exec_block[0] = True
             
             while exec_block[0]:
 
-                sql_exec_thread = Thread(target=sql_exec, args=(sql_block, sql_block_first_line, pipe_results_file))           
-                spinner_thread = Thread(target=spinner, args=(sql_block_first_line, ))
+                sql_exec_thread = Thread(target=sql_exec, args=(sql_block, sql_block_first_line, pipe_results_file), daemon = True)           
+                spinner_thread = Thread(target=spinner, args=(sql_block_first_line, ), daemon = True)
 
                 sql_exec_thread.start()
                 spinner_thread.start()
