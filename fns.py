@@ -146,6 +146,7 @@ def sql_exec(sql_block, sql_block_first_line, pipe_results_file):
     except TimeoutError as e:
         sql_block_state[0] = Fore.RED + f' {e}\n' + Fore.RESET 
     except Exception as e:
+        pyperclip.copy(sql_block)
         sql_block_state[0] = Fore.RED + f' {e}' + Fore.RESET
         exec_block[0]= False
         break_pipe[0] = True
@@ -188,7 +189,7 @@ def pipeline(sql_file_name, pipe_results_file):
             sql_block_first_line = sql_block.split("\n")[0].split("--")[0]
             # print(sql_block_first_line)
             # input()
-            pyperclip.copy(sql_block)
+
             
             break_pipe[0] = False
             exec_block[0] = True
