@@ -18,7 +18,10 @@ while True:
         print(logo_colored)
         print(Fore.YELLOW + " Нажмите ввод, чтобы выбрать файл конвеера!")
         input()
-        sql_source = get_sql_file()   
+        sql_source = get_sql_file()
+
+    if not sql_source:
+        continue
     
     sql_file_name = sql_source["sql_file_name"]
 

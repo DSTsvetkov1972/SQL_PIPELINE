@@ -69,7 +69,7 @@ def get_pipe_results_file_name(sql_file_name):
 
 def get_sql_file():
     
-    while True:
+   # while True:
         # print(Fore.YELLOW + " Выберите файл с SQL-конвеером!" + Fore.RESET)
 
         selected_file = filedialog.askopenfile(title="Выберите файл с SQL-конвеером!")
@@ -82,14 +82,17 @@ def get_sql_file():
 
             if sql_file_name.split(".")[-1].lower() != 'sql':
                 flicker(" Выбранный файл должен иметь расширение .sql!", finish_Fore=Fore.RED)
-                continue
+               # continue
+                return False
+
 
             # Проверяем, чтобы внутри файла были блоки конвеера
             with open (sql_file_name, encoding='utf-8') as f:
                 sql = f.read()
             if  "CREATE OR REPLACE TABLE " not in sql:       
                 flicker(" Выбранный файл не содержит CREATE OR REPLACE TABLE!", finish_Fore=Fore.RED)
-                continue
+                return False
+              #  continue
 
 
             
@@ -100,6 +103,7 @@ def get_sql_file():
                     "pipe_results_file": pipe_results_file}
         else:
             flicker(" Не выбран файл с SQL-конвеером!", finish_Fore=Fore.RED)
+            return False
 
 
 def spinner(sql_block_first_line):
