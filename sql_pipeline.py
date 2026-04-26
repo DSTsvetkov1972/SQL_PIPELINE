@@ -1,6 +1,6 @@
 from fns import pipeline, get_sql_file
 from colorama import Fore, init, Style
-from logo import logo_colored
+from design.logo import logo_colored
 import os
 from fns import flicker
 

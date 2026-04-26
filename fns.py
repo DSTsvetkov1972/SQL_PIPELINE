@@ -7,14 +7,18 @@ from tkinter import filedialog
 from time import sleep
 from threading import Thread
 import pyperclip
+from windows_toasts import InteractableWindowsToaster, Toast, ToastDisplayImage, ToastDuration
 
-dotenv.load_dotenv(r"C:\Users\tsvetkovds\Documents\.Полезности\PYTHON\.env")
+#dotenv.load_dotenv(r"C:\Users\tsvetkovds\Documents\.Полезности\PYTHON\.env")
+dotenv.load_dotenv()
+
 
 CLICK_HOST = os.getenv("CLICK_HOST")
 CLICK_PORT = os.getenv("CLICK_PORT")
 CLICK_DBNAME = os.getenv("CLICK_DBNAME")
 CLICK_USER = os.getenv("CLICK_USER")
 CLICK_PWD = os.getenv("CLICK_PWD")
+
 
 # списки служат для передачи значений между потоками
 # sql_exec - в этом потоке выполняется SQL-запрос формирующий таблицу
@@ -36,6 +40,25 @@ connection=Client(
     settings=dict(socket_timeout=3000000, send_timeout=3000000, keepAliveTimeout=3000000)
     )
 
+
+
+
+
+def toast_msg(title, msgs_list, toast_picture):
+    toaster = InteractableWindowsToaster(title)
+    toast = Toast()
+    toast.text_fields = msgs_list
+    toast.duration = ToastDuration.Long
+
+
+    image = ToastDisplayImage.fromPath(toast_picture)
+    toast.AddImage(image)
+
+
+    # Показываем уведомление
+    toaster.show_toast(toast)
+
+
 def flicker(your_str, interval=0.05, repeats=7, fleaker_Fore=Fore.RED, finish_Fore=Fore.YELLOW, pause = 0):
     print(fleaker_Fore)
     for i in range(0, repeats):
@@ -47,6 +70,7 @@ def flicker(your_str, interval=0.05, repeats=7, fleaker_Fore=Fore.RED, finish_Fo
     print('\033[F' + finish_Fore + your_str + Fore.RESET)
     sleep(pause)
 
+
 def pprint_file_name(sql_file_name, stage=" Файл конвеера:\n"):
 
     path_parts = sql_file_name.split(r"/")
@@ -57,6 +81,7 @@ def pprint_file_name(sql_file_name, stage=" Файл конвеера:\n"):
           Fore.CYAN + f" {folder}\\" +
           Fore.WHITE + f"{short_name}.{file_extension}" +
           Fore.RESET) 
+
 
 def get_pipe_results_file_name(sql_file_name):
     
@@ -211,9 +236,17 @@ def pipeline(sql_file_name, pipe_results_file):
 
 
             if break_pipe[0]:
+                toast_msg("", [sql_file_name, "Конвеер НЕЕЕЕЕЕЕ отработал!"],
+                          os.path.join(os.getcwd(),'design', 'failer_toast.png'))
                 return
-
-        print(Fore.WHITE + f"\n { datetime.now() } " + Fore.GREEN + "Конвеер отработал!" + Fore.RESET)
+        
+        print(Fore.WHITE + f"\n { datetime.now() } " +
+              Fore.BLUE + f"{sql_file_name} " +
+              Fore.GREEN +"Конвеер отработал!" +
+              Fore.RESET)
+        
+        toast_msg("", [sql_file_name, "Конвеер отработал!"],
+                  os.path.join(os.getcwd(),'design', 'success_toast.png'))
     else:
         print(Fore.RED + " В выбранном файле нет ни одного запроса на создание таблицы!" + Fore.RESET)
 
