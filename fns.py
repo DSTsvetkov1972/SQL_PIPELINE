@@ -9,8 +9,8 @@ from threading import Thread
 import pyperclip
 from windows_toasts import InteractableWindowsToaster, Toast, ToastDisplayImage, ToastDuration
 
-#dotenv.load_dotenv(r"C:\Users\tsvetkovds\Documents\.Полезности\PYTHON\.env")
-dotenv.load_dotenv()
+dotenv.load_dotenv(r"C:\Users\tsvetkovds\Documents\.Полезности\PYTHON\.env")
+#dotenv.load_dotenv()
 
 
 CLICK_HOST = os.getenv("CLICK_HOST")
