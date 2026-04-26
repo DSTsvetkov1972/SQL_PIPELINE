@@ -7,7 +7,7 @@ from tkinter import filedialog
 from time import sleep
 from threading import Thread
 import pyperclip
-from windows_toasts import InteractableWindowsToaster, Toast, ToastDisplayImage, ToastDuration
+from windows_toasts import InteractableWindowsToaster, Toast, ToastDisplayImage, ToastDuration, WindowsToaster
 
 dotenv.load_dotenv(r"C:\Users\tsvetkovds\Documents\.Полезности\PYTHON\.env")
 #dotenv.load_dotenv()
@@ -45,7 +45,9 @@ connection=Client(
 
 
 def toast_msg(title, msgs_list, toast_picture):
-    toaster = InteractableWindowsToaster(title)
+    #toaster = InteractableWindowsToaster()
+    toaster = WindowsToaster("SQL_PIPELINE")
+
     toast = Toast()
     toast.text_fields = msgs_list
     toast.duration = ToastDuration.Long
