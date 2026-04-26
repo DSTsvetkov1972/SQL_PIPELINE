@@ -2,4 +2,4 @@ __pycache__
 output
 test*
 .venv
-!temp/output/*.png
+!/output/design/*.png
